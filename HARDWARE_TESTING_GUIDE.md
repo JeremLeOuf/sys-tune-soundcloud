@@ -112,9 +112,37 @@ You should see these demo tracks:
 3. Check Atmosphere logs
 
 ### If Overlay Crashes:
-1. Check Tesla is working with other overlays
-2. Verify file permissions on SD card
-3. Try clean Tesla restart
+1. **File size check**: Overlay should be exactly **397KB** 
+   - If smaller (like 389KB), re-copy from build directory
+   - Corruption during SD card transfer is common
+2. **Enhanced error reporting**: New version shows specific failure step
+   - Step 1: PM service initialization
+   - Step 2a-c: Sysmodule launch process  
+   - Step 3: Service connection after launch
+   - Step 4: SD card access
+   - Step 5: API version compatibility
+3. Check Tesla is working with other overlays
+4. Verify file permissions on SD card
+5. Try clean Tesla restart
+
+### Error Code 2001-0121 Specific Solutions:
+
+**SOLUTION FOUND**: The issue was network services initialization in the sysmodule.
+
+```bash
+# 1. Copy the FIXED distribution files
+cp /mnt/c/Users/jdjao/__DEV/sys-tune-soundcloud/dist/atmosphere/contents/4200000000000000/exefs.nsp /path/to/switch/sd/atmosphere/contents/4200000000000000/
+cp /mnt/c/Users/jdjao/__DEV/sys-tune-soundcloud/dist/switch/.overlays/sys-tune-overlay.ovl /path/to/switch/sd/switch/.overlays/
+
+# 2. Verify file sizes (IMPORTANT!)
+ls -la /path/to/switch/sd/switch/.overlays/sys-tune-overlay.ovl  # Should be 397368 bytes
+ls -la /path/to/switch/sd/atmosphere/contents/4200000000000000/exefs.nsp  # Should be 234209 bytes
+
+# 3. Restore auto-start if desired
+touch /path/to/switch/sd/atmosphere/contents/4200000000000000/flags/boot2.flag
+```
+
+**What was fixed**: Network services (`HttpClient` and `SoundCloudAPI`) were causing sysmodule crashes on startup. These are now disabled until proper network configuration is implemented.
 
 ### If No Audio:
 - **This is expected!** Demo implementation plays sine wave

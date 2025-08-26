@@ -15,51 +15,81 @@ class SysTuneOverlay final : public tsl::Overlay {
 
   public:
     void initServices() override {
-        if (R_FAILED(pm::Initialize())) {
-            this->msg  = "Failed pm::Initialize()";
+        // Step 1: Initialize PM service
+        Result rc = pm::Initialize();
+        if (R_FAILED(rc)) {
+            this->msg = "Step 1 FAILED:\npm::Initialize()";
+            this->fail = rc;
             return;
         }
-        Result rc = tuneInitialize();
 
-        // not found can happen if the service isn't started
-        // connection refused can happen is the service was terminated by pmshell
+        // Step 2: Try to connect to sys-tune service
+        rc = tuneInitialize();
+        
+        // If service not found, try to launch sysmodule
         if (R_VALUE(rc) == KERNELRESULT(NotFound) || R_VALUE(rc) == KERNELRESULT(ConnectionRefused)) {
             u64 pid = 0;
             const NcmProgramLocation programLocation{
                 .program_id = 0x4200000000000000,
                 .storageID  = NcmStorageId_None,
             };
+            
             rc = pmshellInitialize();
-            if (R_SUCCEEDED(rc)) {
-                rc = pmshellLaunchProgram(0, &programLocation, &pid);
-                pmshellExit();
-            }
-            if (R_FAILED(rc) || pid == 0) {
+            if (R_FAILED(rc)) {
+                this->msg = "Step 2a FAILED:\npmshellInitialize()";
                 this->fail = rc;
-                this->msg  = "  Failed to\n"
-                            "launch sysmodule";
                 return;
             }
+            
+            rc = pmshellLaunchProgram(0, &programLocation, &pid);
+            pmshellExit();
+            
+            if (R_FAILED(rc)) {
+                this->msg = "Step 2b FAILED:\npmshellLaunchProgram()";
+                this->fail = rc;
+                return;
+            }
+            
+            if (pid == 0) {
+                this->msg = "Step 2c FAILED:\npid = 0 after launch";
+                this->fail = 0x1234; // Custom error code
+                return;
+            }
+            
+            // Wait for service to start
             svcSleepThread(500'000'000ULL);
             rc = tuneInitialize();
         }
 
+        // Step 3: Check final connection
         if (R_FAILED(rc)) {
-            this->msg  = "Something went wrong:";
+            this->msg = "Step 3 FAILED:\ntuneInitialize() after launch";
             this->fail = rc;
             return;
         }
 
+        // Step 4: Initialize SDMC
         if (R_FAILED(sdmc::Open())) {
-            this->msg  = "Failed sdmc::Open()";
+            this->msg = "Step 4 FAILED:\nsdmc::Open()";
             return;
         }
 
+        // Step 5: Check API version
         u32 api;
-        if (R_FAILED(tuneGetApiVersion(&api)) || api != TUNE_API_VERSION) {
-            this->msg = "   Unsupported\n"
-                        "sys-tune version!";
+        rc = tuneGetApiVersion(&api);
+        if (R_FAILED(rc)) {
+            this->msg = "Step 5a FAILED:\ntuneGetApiVersion()";
+            this->fail = rc;
+            return;
         }
+        
+        if (api != TUNE_API_VERSION) {
+            this->msg = "Step 5b FAILED:\nAPI version mismatch";
+            return;
+        }
+        
+        // If we get here, everything worked!
+        // this->msg remains nullptr for success
     }
 
     void exitServices() override {

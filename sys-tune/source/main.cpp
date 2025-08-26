@@ -41,13 +41,15 @@ void __appInit() {
     R_ABORT_UNLESS(sdmc::Open());
     
     // Initialize network services for SoundCloud streaming
-    R_ABORT_UNLESS(tune::impl::HttpClient::Initialize());
-    R_ABORT_UNLESS(tune::impl::SoundCloudAPI::Initialize());
+    // TEMPORARILY DISABLED for debugging - these may be causing crashes
+    // R_ABORT_UNLESS(tune::impl::HttpClient::Initialize());
+    // R_ABORT_UNLESS(tune::impl::SoundCloudAPI::Initialize());
 }
 
 void __appExit(void) {
-    tune::impl::SoundCloudAPI::Exit();
-    tune::impl::HttpClient::Exit();
+    // TEMPORARILY DISABLED network cleanup for debugging
+    // tune::impl::SoundCloudAPI::Exit();
+    // tune::impl::HttpClient::Exit();
     sdmc::Close();
     pm::Exit();
     audWrapperExit();

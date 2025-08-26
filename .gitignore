@@ -5,7 +5,18 @@
 *.nacp
 *.npdm
 *.ovl
+*.o
+*.d
+*.map
+*.lst
 .vscode/settings.json
-build
-dist
+build/
+dist/
 *.zip
+
+# Temporary files
+*.tmp
+*.temp
+pc_test*
+debug_*
+*_test.*
