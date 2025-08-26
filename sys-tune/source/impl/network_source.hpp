@@ -61,10 +61,10 @@ public:
     void StopStreaming();
     bool IsStreaming() const;
     
-    // Override file operations to work with network data
-    size_t ReadFile(void *buffer, size_t read_size) override;
-    s64 TellFile() override;
-    bool SeekFile(s64 offset, int origin) override;
+    // Network-specific file operations (not overriding base class)
+    size_t NetworkRead(void *buffer, size_t read_size);
+    s64 NetworkTell();
+    bool NetworkSeek(s64 offset, int origin);
 };
 
 } // namespace tune::impl

@@ -482,7 +482,7 @@ std::unique_ptr<Source> OpenStream(const char *url) {
         return nullptr;
     }
     
-    auto network_source = std::make_unique<NetworkSource>(url);
+    auto network_source = std::make_unique<tune::impl::NetworkSource>(url);
     if (!network_source->StartStreaming()) {
         return nullptr;
     }

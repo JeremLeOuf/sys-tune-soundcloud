@@ -55,7 +55,7 @@ bool NetworkSource::LoadNextChunk() {
     return true;
 }
 
-size_t NetworkSource::ReadFile(void *buffer, size_t read_size) {
+size_t NetworkSource::NetworkRead(void *buffer, size_t read_size) {
     if (!buffer || read_size == 0) {
         return 0;
     }
@@ -65,11 +65,11 @@ size_t NetworkSource::ReadFile(void *buffer, size_t read_size) {
     return read_size;
 }
 
-s64 NetworkSource::TellFile() {
+s64 NetworkSource::NetworkTell() {
     return 0; // Demo implementation
 }
 
-bool NetworkSource::SeekFile(s64 offset, int origin) {
+bool NetworkSource::NetworkSeek(s64 offset, int origin) {
     return false; // Seeking not supported for streaming
 }
 

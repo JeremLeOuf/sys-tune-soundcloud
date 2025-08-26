@@ -1,6 +1,7 @@
 #include "soundcloud_api.hpp"
 #include <sstream>
 #include <algorithm>
+#include <iomanip>
 #include <cctype>
 
 namespace tune::impl {
