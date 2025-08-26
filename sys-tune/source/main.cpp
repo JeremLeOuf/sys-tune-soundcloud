@@ -1,4 +1,6 @@
 #include "impl/music_player.hpp"
+#include "impl/http_client.hpp"
+#include "impl/soundcloud_api.hpp"
 #include "sdmc/sdmc.hpp"
 #include "pm/pm.hpp"
 #include "impl/aud_wrapper.h"
@@ -37,9 +39,15 @@ void __appInit() {
     R_ABORT_UNLESS(audWrapperInitialize());
     R_ABORT_UNLESS(pm::Initialize());
     R_ABORT_UNLESS(sdmc::Open());
+    
+    // Initialize network services for SoundCloud streaming
+    R_ABORT_UNLESS(tune::impl::HttpClient::Initialize());
+    R_ABORT_UNLESS(tune::impl::SoundCloudAPI::Initialize());
 }
 
 void __appExit(void) {
+    tune::impl::SoundCloudAPI::Exit();
+    tune::impl::HttpClient::Exit();
     sdmc::Close();
     pm::Exit();
     audWrapperExit();

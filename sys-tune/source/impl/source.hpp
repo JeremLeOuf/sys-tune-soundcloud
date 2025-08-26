@@ -9,6 +9,7 @@ enum class SourceType {
     MP3,
     FLAC,
     WAV,
+    STREAM,
 };
 
 class Source {
@@ -72,4 +73,6 @@ class Source {
 };
 
 std::unique_ptr<Source> OpenFile(const char *path);
+std::unique_ptr<Source> OpenStream(const char *url);
 SourceType GetSourceType(const char* path);
+bool IsStreamURL(const char* path);

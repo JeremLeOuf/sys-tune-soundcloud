@@ -1,4 +1,5 @@
 #include "source.hpp"
+#include "network_source.hpp"
 
 #include "sdmc/sdmc.hpp"
 
@@ -474,4 +475,26 @@ SourceType GetSourceType(const char* path) {
     }
 
     return SourceType::NONE;
+}
+
+std::unique_ptr<Source> OpenStream(const char *url) {
+    if (!IsStreamURL(url)) {
+        return nullptr;
+    }
+    
+    auto network_source = std::make_unique<NetworkSource>(url);
+    if (!network_source->StartStreaming()) {
+        return nullptr;
+    }
+    
+    return std::move(network_source);
+}
+
+bool IsStreamURL(const char* path) {
+    if (!path) {
+        return false;
+    }
+    
+    std::string url(path);
+    return url.find("http://") == 0 || url.find("https://") == 0;
 }

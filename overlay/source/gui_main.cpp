@@ -4,6 +4,7 @@
 #include "elm_volume.hpp"
 #include "gui_browser.hpp"
 #include "gui_playlist.hpp"
+#include "gui_soundcloud.hpp"
 #include "pm/pm.hpp"
 #include "config/config.hpp"
 
@@ -46,6 +47,17 @@ tsl::elm::Element *MainGui::createUI() {
         return false;
     });
     list->addItem(browser_button);
+
+    /* SoundCloud. */
+    auto soundcloud_button = new tsl::elm::ListItem("SoundCloud");
+    soundcloud_button->setClickListener([](u64 keys) {
+        if (keys & HidNpadButton_A) {
+            tsl::changeTo<SoundCloudGui>();
+            return true;
+        }
+        return false;
+    });
+    list->addItem(soundcloud_button);
 
     /* Volume indicator */
     list->addItem(new tsl::elm::CategoryHeader("Volume Control"));

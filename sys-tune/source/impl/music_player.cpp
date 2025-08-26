@@ -245,8 +245,15 @@ namespace tune::impl {
         bool g_should_run        = true;
 
         Result PlayTrack(const char* path) {
-            /* Open file and allocate */
-            auto source = OpenFile(path);
+            /* Open file or stream and allocate */
+            std::unique_ptr<Source> source;
+            
+            if (IsStreamURL(path)) {
+                source = OpenStream(path);
+            } else {
+                source = OpenFile(path);
+            }
+            
             R_UNLESS(source != nullptr, tune::FileOpenFailure);
             R_UNLESS(source->IsOpen(), tune::FileOpenFailure);
             R_UNLESS(source->SetupResampler(audoutGetChannelCount(), audoutGetSampleRate()), tune::VoiceInitFailure);
