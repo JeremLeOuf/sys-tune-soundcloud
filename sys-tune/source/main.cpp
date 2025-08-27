@@ -39,25 +39,9 @@ void __appInit() {
     R_ABORT_UNLESS(audWrapperInitialize());
     R_ABORT_UNLESS(pm::Initialize());
     R_ABORT_UNLESS(sdmc::Open());
-    
-    // Initialize network services for YouTube Music streaming with error handling
-    Result rc = tune::impl::HttpClient::Initialize();
-    if (R_SUCCEEDED(rc)) {
-        rc = tune::impl::YouTubeMusicAPI::Initialize();
-        if (R_FAILED(rc)) {
-            // YouTube Music API failed, but continue without it
-            // The overlay will show an error if needed
-        }
-    } else {
-        // Network initialization failed, continue without network features
-        // This allows the basic music player to still work
-    }
 }
 
 void __appExit(void) {
-    // Clean up network services safely
-    tune::impl::YouTubeMusicAPI::Exit();
-    tune::impl::HttpClient::Exit();
     sdmc::Close();
     pm::Exit();
     audWrapperExit();

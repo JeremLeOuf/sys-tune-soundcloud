@@ -4,8 +4,8 @@
 YouTubeMusicGui::YouTubeMusicGui() {
     // Add test track for demonstration
     YouTubeTrack test_track;
-    test_track.video_id = "dQw4w9WgXcQ";
-    test_track.title = "Rick Astley - Never Gonna Give You Up (Official Video)";
+    test_track.video_id = "VGa3xhgHgHc";
+    test_track.title = "Your Test Track From YouTube Music";
     test_track.channel_title = "Rick Astley";
     test_track.description = "The official video for Rick Astley's Never Gonna Give You Up";
     test_track.duration = "PT3M33S";
