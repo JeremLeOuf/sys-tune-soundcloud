@@ -1,0 +1,18 @@
+// Example API Keys Configuration
+// Copy this file to api_keys.hpp and fill in your API keys
+
+#pragma once
+
+namespace tune {
+namespace config {
+
+// Get your YouTube Data API v3 key from:
+// https://console.developers.google.com/
+// 1. Create a new project or select existing
+// 2. Enable "YouTube Data API v3"  
+// 3. Create credentials → API Key
+// 4. Copy the key below
+const char* const YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY_HERE";
+
+} // namespace config
+} // namespace tune

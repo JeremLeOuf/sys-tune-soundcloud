@@ -17,7 +17,8 @@ namespace {
         return strcasecmp(name + std::strlen(name) - std::strlen(ext), ext) == 0;
     }
 
-    constexpr const std::array SupportedTypes = {
+    // Supported audio file types
+    constexpr const char* SupportedTypes[] = {
 #ifdef WANT_MP3
         ".mp3",
 #endif
@@ -28,12 +29,15 @@ namespace {
         ".wav",
         ".wave",
 #endif
+        nullptr  // Null terminator
     };
 
     bool SupportsType(const char *name) {
-        for (auto &ext : SupportedTypes)
+        for (const char* ext : SupportedTypes) {
+            if (ext == nullptr) break;  // End of array
             if (EndsWith(name, ext))
                 return true;
+        }
         return false;
     }
 

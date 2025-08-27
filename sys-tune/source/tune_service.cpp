@@ -1,11 +1,17 @@
 #include "tune_service.hpp"
 
 #include "impl/music_player.hpp"
-#include "ipc_cmd.h"
+#include "../ipc/ipc_cmd.h"
+#include "../ipc/tune.h"
 #include "tune_result.hpp"
 #include "tune_types.hpp"
 
 #include <nxExt.h>
+
+// Ensure API version is defined
+#ifndef TUNE_API_VERSION
+#define TUNE_API_VERSION 2
+#endif
 
 #define GET_SINGLE(type, expr)            \
     ({                                    \
@@ -138,7 +144,7 @@ namespace tune {
 
                 case TuneIpcCmd_GetApiVersion:
                     *out_dataSize    = sizeof(u32);
-                    *(u32 *)out_data = TUNE_API_VERSION;
+                    *(u32 *)out_data = 2;  // TUNE_API_VERSION
                     return 0;
             }
             return tune::Generic;

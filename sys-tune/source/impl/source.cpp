@@ -34,11 +34,15 @@ namespace {
         SeekOrigin_END
     };
 
+    
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
     size_t ReadCallback(void *pUserData, void *pBufferOut, size_t bytesToRead) {
         auto data = static_cast<Source *>(pUserData);
 
         return data->ReadFile(pBufferOut, bytesToRead);
     }
+#pragma GCC diagnostic pop
 
 #ifdef WANT_FLAC
     drflac_bool32 FlacSeekCallback(void *pUserData, int offset, drflac_seek_origin origin) {

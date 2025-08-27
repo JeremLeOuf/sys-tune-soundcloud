@@ -83,7 +83,7 @@ class SysTuneOverlay final : public tsl::Overlay {
             return;
         }
         
-        if (api != TUNE_API_VERSION) {
+        if (api != 2) {  // TUNE_API_VERSION
             this->msg = "Step 5b FAILED:\nAPI version mismatch";
             return;
         }

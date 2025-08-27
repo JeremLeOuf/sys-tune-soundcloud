@@ -14,9 +14,19 @@ build/
 dist/
 *.zip
 
+# API Keys (keep your keys private!)
+common/config/api_keys.hpp
+
+# Environment variables
+.env
+
 # Temporary files
 *.tmp
 *.temp
 pc_test*
 debug_*
 *_test.*
+YOUTUBE_MIGRATION_COMPLETE.md
+CLEANUP_COMPLETE.md
+PROJECT_COMPLETE.md
+REPO_RENAME_OPTIONS.md

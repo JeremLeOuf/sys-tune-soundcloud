@@ -1,6 +1,6 @@
 #include "impl/music_player.hpp"
 #include "impl/http_client.hpp"
-#include "impl/soundcloud_api.hpp"
+#include "impl/youtube_music_api.hpp"
 #include "sdmc/sdmc.hpp"
 #include "pm/pm.hpp"
 #include "impl/aud_wrapper.h"
@@ -40,16 +40,24 @@ void __appInit() {
     R_ABORT_UNLESS(pm::Initialize());
     R_ABORT_UNLESS(sdmc::Open());
     
-    // Initialize network services for SoundCloud streaming
-    // TEMPORARILY DISABLED for debugging - these may be causing crashes
-    // R_ABORT_UNLESS(tune::impl::HttpClient::Initialize());
-    // R_ABORT_UNLESS(tune::impl::SoundCloudAPI::Initialize());
+    // Initialize network services for YouTube Music streaming with error handling
+    Result rc = tune::impl::HttpClient::Initialize();
+    if (R_SUCCEEDED(rc)) {
+        rc = tune::impl::YouTubeMusicAPI::Initialize();
+        if (R_FAILED(rc)) {
+            // YouTube Music API failed, but continue without it
+            // The overlay will show an error if needed
+        }
+    } else {
+        // Network initialization failed, continue without network features
+        // This allows the basic music player to still work
+    }
 }
 
 void __appExit(void) {
-    // TEMPORARILY DISABLED network cleanup for debugging
-    // tune::impl::SoundCloudAPI::Exit();
-    // tune::impl::HttpClient::Exit();
+    // Clean up network services safely
+    tune::impl::YouTubeMusicAPI::Exit();
+    tune::impl::HttpClient::Exit();
     sdmc::Close();
     pm::Exit();
     audWrapperExit();

@@ -6,6 +6,11 @@ extern "C" {
 
 #include <switch.h>
 
+// API version for YouTube Music integration
+#ifndef TUNE_API_VERSION
+#define TUNE_API_VERSION 2
+#endif
+
 typedef enum {
     TuneShuffleMode_Off,
     TuneShuffleMode_On,
